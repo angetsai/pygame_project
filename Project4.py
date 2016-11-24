@@ -27,8 +27,18 @@ pygame.display.update()		#only updates portion specified
 
 gameExit = False
 while not gameExit:
-	for event in pygame.event.get():
-		print(event)
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            gameExit = True
+    
+    gameDisplay.fill(white)
+    pygame.draw.rect(gameDisplay, black, [400,300,10,100])
+    pygame.draw.rect(gameDisplay, red,[100,100,50,50])
+    gameDisplay.fill(blue, rect=[200,200,20,20])
+    gameDisplay.fill(blue, rect=[50,50,20,20])
+    pygame.draw.circle(gameDisplay, red, (50, 100), 20, 0)
+    pygame.draw.lines(gameDisplay, red, False, [(100,100), (150,200), (200,100)], 1)
+    pygame.display.update()
 
 
 
