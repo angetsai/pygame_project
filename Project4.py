@@ -2,27 +2,39 @@ print ("Project 4: Pygame")
 
 import random
 import sys
-
 import pygame
-from pygame.locals import Rect, DOUBLEBUF, QUIT, K_ESCAPE, KEYDOWN, K_LEFT, K_UP, K_RIGHT, KEYUP, K_LCTRL, K_RETURN, FULLSCREEN
+import os
+#from pygame.locals import Rect, DOUBLEBUF, QUIT, K_ESCAPE, KEYDOWN, K_LEFT, K_UP, K_RIGHT, KEYUP, K_LCTRL, K_RETURN, FULLSCREEN
+from pygame.locals import *
 pygame.init();
 
-#create colors
-white = (255, 255, 255)
-black = (0,0,0)
-red = (255, 0, 0)
-green = (0, 255, 0)
-blue = (0, 0, 255)
+
+# set window size to match picture size
+width = 1024
+height = 768
+
+# initialise pygame
+pygame.init()
+screen = pygame.display.set_mode((width,height),1,16)
+#load picture
+background= pygame.image.load('hogwarts.bmp')
+#display picture
+screen.blit(background,(0,0))
+pygame.display.flip()
+
+
+
+
 
 
 #create a surface
-gameDisplay = pygame.display.set_mode((800,600)) #initialize with a tuple
+#gameDisplay = pygame.display.set_mode((800,600)) #initialize with a tuple
 
 #lets add a title, aka "caption"
-pygame.display.set_caption("Events")
+pygame.display.set_caption("Hogwarts")
 
 #pygame.display.flip() 		#similar to a flip book, updates entire surface
-pygame.display.update()		#only updates portion specified
+#pygame.display.update()		#only updates portion specified
 
 
 gameExit = False
@@ -31,14 +43,9 @@ while not gameExit:
         if event.type == pygame.QUIT:
             gameExit = True
     
-    gameDisplay.fill(white)
-    pygame.draw.rect(gameDisplay, black, [400,300,10,100])
-    pygame.draw.rect(gameDisplay, red,[100,100,50,50])
-    gameDisplay.fill(blue, rect=[200,200,20,20])
-    gameDisplay.fill(blue, rect=[50,50,20,20])
-    pygame.draw.circle(gameDisplay, red, (50, 100), 20, 0)
-    pygame.draw.lines(gameDisplay, red, False, [(100,100), (150,200), (200,100)], 1)
-    pygame.display.update()
+
+    
+  
 
 
 
