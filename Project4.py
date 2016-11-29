@@ -9,15 +9,17 @@ from pygame.locals import *
 
 
 
-class HarryPotter(object):
+class HarryPotter(pygame.sprite.Sprite):
     def __init__(self):
-        self.image = pygame.image.load('harrypotter.bmp')
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.image.load('harrypotter.bmp').convert_alpha() #enable alpha transparency option  ##look up how to make bmp background transparent
+        self.rect = self.image.get_rect()
         self.x = 0
         self.y = 0
         
     def handle_keys(self):
         key = pygame.key.get_pressed()
-        dist = 1
+        dist = 10
         if key[pygame.K_DOWN]:
             self.y += dist
         elif key[pygame.K_UP]:
@@ -43,7 +45,7 @@ pygame.display.set_caption("Hogwarts")
 #load picture
 background= pygame.image.load('hogwarts.bmp')
 hp = HarryPotter()
-sprite= pygame.image.load('HarryPotter.bmp')
+#sprite= pygame.image.load('HarryPotter.bmp')
 
 clock = pygame.time.Clock()
 crashed = False
@@ -62,7 +64,7 @@ while not gameExit:
     hp.draw(screen)
     pygame.display.flip()
 
-    clock.tick(60)
+    clock.tick(120)
 
 #pygame.display.flip() 		#similar to a flip book, updates entire surface
 #pygame.display.update()		#only updates portion specified
