@@ -13,7 +13,15 @@ class HarryPotter(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.image.load('harrypotter.bmp').convert_alpha() #enable alpha transparency option  ##look up how to make bmp background transparent
+        #self.image = pygame.transform.scale(self.image,(70,70))
+        self.image = self.image.convert()
         self.rect = self.image.get_rect()
+        self_image2 = self.image.convert_alpha()
+        self.rect2 = self_image2.get_rect()
+
+#image2 = image2.convert_alpha()
+#rect2 = image2.get_rect()
+        #self.rect = self.image.get_rect()
         self.x = 0
         self.y = 0
         
