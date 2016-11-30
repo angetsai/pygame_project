@@ -14,10 +14,10 @@ class HarryPotter(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.image.load('harrypotter.bmp').convert_alpha() #enable alpha transparency option  ##look up how to make bmp background transparent
         #self.image = pygame.transform.scale(self.image,(70,70))
-        self.image = self.image.convert()
+        #self.image = self.image.convert()
         self.rect = self.image.get_rect()
-        self_image2 = self.image.convert_alpha()
-        self.rect2 = self_image2.get_rect()
+        #self_image2 = self.image.convert_alpha()
+        #self.rect2 = self_image2.get_rect()
 
 #image2 = image2.convert_alpha()
 #rect2 = image2.get_rect()
@@ -40,6 +40,31 @@ class HarryPotter(pygame.sprite.Sprite):
     def draw(self, surface):
         surface.blit(self.image, (self.x, self.y))
 
+
+class Snitch(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.image.load('snitch.bmp')
+        self.rect2 = self.image.get_rect()
+        self.x = 0
+        self.y = 0
+        
+          
+    def handle_keys(self):
+        key = pygame.key.get_pressed()
+        dist = 10
+        if key[pygame.K_DOWN]:
+            self.y += dist
+        elif key[pygame.K_UP]:
+            self.y -= dist
+        if key[pygame.K_RIGHT]:
+            self.x += dist
+        elif key[pygame.K_LEFT]:
+            self.x -= dist
+            
+    def draw(self, surface):
+        surface.blit(self.image, (self.x, self.y))
+      
 # set window size to match picture size
 width = 774
 height = 581
@@ -53,7 +78,9 @@ pygame.display.set_caption("Hogwarts")
 #load picture
 background= pygame.image.load('hogwarts.bmp')
 hp = HarryPotter()
+snitch = Snitch()
 #sprite= pygame.image.load('HarryPotter.bmp')
+
 
 clock = pygame.time.Clock()
 crashed = False
@@ -70,6 +97,7 @@ while not gameExit:
 #display picture
     screen.blit(background,(0,0))
     hp.draw(screen)
+    snitch.draw(screen)
     pygame.display.flip()
 
     clock.tick(120)
