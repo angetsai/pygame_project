@@ -1,6 +1,5 @@
 print ("Project 4: Pygame")
 
-import random
 import sys
 import pygame
 import os
@@ -10,81 +9,51 @@ from pygame import *
 from pygame.sprite import *
 from random import *
 
-DELAY = 1000;
-
-quidditch = pygame.sprite.Group()
 
 class HarryPotter(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load('harrypotter.bmp').convert() #make background transparent
+        self.image = pygame.image.load('harrypotter.bmp').convert() #enable alpha transparency option  ##look up how to make bmp background transparent
         self.transColor = self.image.get_at((0,0))
         self.image.set_colorkey(self.transColor)
         self.rect = self.image.get_rect()
-  
-        self.x = 0
-        self.y = 0
+        self.radius = self.rect.height/2
+        self.rect.x = 0
+        self.rect.y = 0
+        self.reverse = 1
         
     def handle_keys(self):
         key = pygame.key.get_pressed()
         dist = 10
         if key[pygame.K_DOWN]:
-            self.y += dist
+            self.rect.y += dist*self.reverse
+            if self.rect.y >= 636:
+                self.reverse = -1
+            if self.rect.y <= 0:
+                self.reverse = 1
         elif key[pygame.K_UP]:
-            self.y -= dist
+            self.rect.y -= dist*self.reverse
+            if self.rect.y <= 0:
+                self.reverse = -1
+            if self.rect.y >= 636:
+                self.reverse = 1
         if key[pygame.K_RIGHT]:
-            self.x += dist
+            self.rect.x += dist*self.reverse
+            if self.rect.x >= 636:
+                self.reverse = -1
+            if self.rect.x <= 0:
+                self.reverse = 1
         elif key[pygame.K_LEFT]:
-            self.x -= dist
+            self.rect.x -= dist*self.reverse
+            if self.rect.x <= 0:
+                self.reverse = -1
+            if self.rect.x >= 847:
+                self.reverse = 1
+                 
         
     def draw(self, surface):
-        surface.blit(self.image, (self.x, self.y))
+        surface.blit(self.image, (self.rect.x, self.rect.y))
         
-    def hit(self, target):
-        return self.rect.colliderect(target)
-        
-    def move(self, dx, dy):
-        # Move each axis separately. Note that this checks for collisions both times.
-        if dx != 0:
-            self.move_single_axis(dx, 0)
-        if dy != 0:
-            self.move_single_axis(0, dy)
-    
-    def move_single_axis(self, dx, dy):
-        
-        # Move the rect
-        self.rect.x += dx
-        self.rect.y += dy
-
-        # If you collide with a wall, move out based on velocity
-        for wall in walls:
-            if self.rect.colliderect(wall.rect):
-                if dx > 0: # Moving right; Hit the left side of the wall
-                    self.rect.right = wall.rect.left
-                if dx < 0: # Moving left; Hit the right side of the wall
-                    self.rect.left = wall.rect.right
-                if dy > 0: # Moving down; Hit the top side of the wall
-                    self.rect.bottom = wall.rect.top
-                if dy < 0: # Moving up; Hit the bottom side of the wall
-                    self.rect.top = wall.rect.bottom
-    
-    #def move(self):
-     #   randX = randint(0, 600)
-      #  randY = randint(0, 400)
-       # self.rect.center = (randX,randY)
-        
-        
-    #def moveme(self,x,y):
-     #   if self.rect.left + x < 0:
-      #      self.rect.left = 0
-       # elif self.rect.right + x > 847:
-        #    self.rect.right = 847
-        #elif self.rect.top + y < 0:
-         #   self.rect.top = 0
-        #elif self.rect.bottom + y > 636:
-         #   self.rect.bottom = 636
-        #else:
-         #   self.rect.move_ip((x,y))
 
 
 class Snitch(pygame.sprite.Sprite):
@@ -94,29 +63,59 @@ class Snitch(pygame.sprite.Sprite):
         self.transColor = self.image.get_at((0,0))
         self.image.set_colorkey(self.transColor)
         self.rect = self.image.get_rect()
-        self.x = 700
-        self.y = 500
+        self.radius = self.rect.height/2
+        self.rect.x = 700
+        self.rect.y = 500
+        self.reverse = 1
         
           #random movement // design object to move 1 pixel per each instance in while loop 
     def handle_keys(self):
         key = pygame.key.get_pressed()
-        dist = 15
+        dist = randint(1,15)
         if key[pygame.K_UP]:
-            self.y += dist
+            self.rect.y -= dist*self.reverse
+            if self.rect.y <= 0:
+                self.reverse = -1
+            if self.rect.y >= 636:
+                self.reverse = 1
         elif key[pygame.K_DOWN]:
-            self.y -= dist
+            self.rect.y += dist*self.reverse
+            if self.rect.y >= 636:
+                self.reverse = -1
+            if self.rect.y <= 0:
+                self.reverse = 1
         if key[pygame.K_LEFT]:
-            self.x += dist
+            self.rect.x -= dist*self.reverse
+            if self.rect.x <= 0:
+                self.reverse = -1
+            if self.rect.x >= 847:
+                self.reverse = 1
         elif key[pygame.K_RIGHT]:
-            self.x -= dist
+            self.rect.x += dist*self.reverse
+            if self.rect.x >= 636:
+                self.reverse = -1
+            if self.rect.x <= 0:
+                self.reverse = 1
+        
+        elif event.type == pygame.KEYUP:
+                if event.key == pygame.K_UP or event.key == pygame.K_DOWN:
+                    self.rect.y += dist*self.reverse
+                    if self.rect.y >= 636:
+                        self.reverse = -1
+                    if self.rect.y <= 0:
+                        self.reverse = 1
+                if event.key == pygame.K_RIGHT or event.key == pygame.K_LEFT:
+                    self.rect.x -= dist*self.reverse
+                    if self.rect.x <= 0:
+                        self.reverse = -1
+                    if self.rect.x >= 847:
+                        self.reverse = 1
             
     def draw(self, surface):
-        surface.blit(self.image, (self.x, self.y))
+        surface.blit(self.image, (self.rect.x, self.rect.y))
         
-    def move(self):
-        randX = randint(0, 600)
-        randY = randint(0, 400)
-        self.rect.center = (randX,randY)
+    
+        
         
 class Quaffle(pygame.sprite.Sprite):
     def __init__(self):
@@ -125,28 +124,58 @@ class Quaffle(pygame.sprite.Sprite):
         self.transColor = self.image.get_at((0,0))
         self.image.set_colorkey(self.transColor)
         self.rect = self.image.get_rect()
-        self.x = 320
-        self.y = 280
+        self.rect.x = 20
+        self.rect.y = 500
+        self.reverse = 1
         
-          #random movement // design object to move 1 pixel per each instance in while loop 
     def handle_keys(self):
         key = pygame.key.get_pressed()
-        dist = 11
+        dist = randint(1,7)
         if key[pygame.K_UP]:
-            self.y += dist
+            self.rect.y -= dist*self.reverse
+            if self.rect.y <= 0:
+                self.reverse = -1
+            if self.rect.y >= 636:
+                self.reverse = 1
         elif key[pygame.K_DOWN]:
-            self.y -= dist
+            self.rect.y += dist*self.reverse
+            if self.rect.y >= 636:
+                self.reverse = -1
+            if self.rect.y <= 0:
+                self.reverse = 1
         if key[pygame.K_LEFT]:
-            self.x += dist
+            self.rect.x -= dist*self.reverse
+            if self.rect.x <= 0:
+                self.reverse = -1
+            if self.rect.x >= 847:
+                self.reverse = 1
         elif key[pygame.K_RIGHT]:
-            self.x -= dist
+            self.rect.x += dist*self.reverse
+            if self.rect.x >= 636:
+                self.reverse = -1
+            if self.rect.x <= 0:
+                self.reverse = 1
+        
+        elif event.type == pygame.KEYUP:
+                if event.key == pygame.K_UP or event.key == pygame.K_DOWN:
+                    self.rect.y -= dist*self.reverse
+                    if self.rect.y <= 0:
+                        self.reverse = -1
+                    if self.rect.y >= 636:
+                        self.reverse = 1
+                if event.key == pygame.K_RIGHT or event.key == pygame.K_LEFT:
+                    self.rect.x += dist*self.reverse
+                    if self.rect.x >= 636:
+                        self.reverse = -1
+                    if self.rect.x <= 0:
+                        self.reverse = 1
             
     def draw(self, surface):
-        surface.blit(self.image, (self.x, self.y))
+        surface.blit(self.image, (self.rect.x, self.rect.y))
         
     def move(self):
-        randX = randint(0, 600)
-        randY = randint(0, 400)
+        randX = randint(0, 847)
+        randY = randint(0, 636)
         self.rect.center = (randX,randY)
         
 class Bludger1(pygame.sprite.Sprite):
@@ -156,28 +185,58 @@ class Bludger1(pygame.sprite.Sprite):
         self.transColor = self.image.get_at((0,0))
         self.image.set_colorkey(self.transColor)
         self.rect = self.image.get_rect()
-        self.x = 20
-        self.y = 500
+        self.rect.x = 320
+        self.rect.y = 280
+        self.reverse = 1
         
-          #random movement // design object to move 1 pixel per each instance in while loop 
     def handle_keys(self):
         key = pygame.key.get_pressed()
-        dist = 11
+        dist = randint(1,30)
         if key[pygame.K_UP]:
-            self.y += dist
+            self.rect.y += dist*self.reverse
+            if self.rect.y >= 636:
+                self.reverse = -1
+            if self.rect.y <= 0:
+                self.reverse = 1
         elif key[pygame.K_DOWN]:
-            self.y -= dist
+            self.rect.y -= dist*self.reverse
+            if self.rect.y <= 0:
+                self.reverse = -1
+            if self.rect.y >= 636:
+                self.reverse = 1
         if key[pygame.K_LEFT]:
-            self.x += dist
+            self.rect.x += dist*self.reverse
+            if self.rect.x >= 636:
+                self.reverse = -1
+            if self.rect.x <= 0:
+                self.reverse = 1
         elif key[pygame.K_RIGHT]:
-            self.x -= dist
+            self.rect.x -= dist*self.reverse
+            if self.rect.x <= 0:
+                self.reverse = -1
+            if self.rect.x >= 847:
+                self.reverse = 1
+                
+        elif event.type == pygame.KEYUP:
+                if event.key == pygame.K_UP or event.key == pygame.K_DOWN:
+                    self.rect.y -= dist*self.reverse
+                if self.rect.y <= 0:
+                    self.reverse = -1
+                if self.rect.y >= 636:
+                    self.reverse = 1
+                if event.key == pygame.K_RIGHT or event.key == pygame.K_LEFT:
+                    self.rect.x += dist*self.reverse
+                    if self.rect.x >= 636:
+                        self.reverse = -1
+                    if self.rect.x <= 0:
+                        self.reverse = 1  
             
     def draw(self, surface):
-        surface.blit(self.image, (self.x, self.y))
+        surface.blit(self.image, (self.rect.x, self.rect.y))
         
     def move(self):
-        randX = randint(0, 600)
-        randY = randint(0, 400)
+        randX = randint(0, 847)
+        randY = randint(0, 636)
         self.rect.center = (randX,randY)
         
 class Bludger2(pygame.sprite.Sprite):
@@ -187,35 +246,59 @@ class Bludger2(pygame.sprite.Sprite):
         self.transColor = self.image.get_at((0,0))
         self.image.set_colorkey(self.transColor)
         self.rect = self.image.get_rect()
-        self.x = 700
-        self.y = 20
-        
-          #random movement // design object to move 1 pixel per each instance in while loop 
+        self.rect.x = 700
+        self.rect.y = 20
+        self.reverse = 1
+
     def handle_keys(self):
         key = pygame.key.get_pressed()
-        dist = 11
+        dist = randint(1,30)
         if key[pygame.K_UP]:
-            self.y += dist
+            self.rect.y += dist*self.reverse
+            if self.rect.y >= 636:
+                self.reverse = -1
+            if self.rect.y <= 0:
+                self.reverse = 1
         elif key[pygame.K_DOWN]:
-            self.y -= dist
+            self.rect.y -= dist*self.reverse
+            if self.rect.y <= 0:
+                self.reverse = -1
+            if self.rect.y >= 636:
+                self.reverse = 1
         if key[pygame.K_LEFT]:
-            self.x += dist
+            self.rect.x += dist*self.reverse
+            if self.rect.x >= 636:
+                self.reverse = -1
+            if self.rect.x <= 0:
+                self.reverse = 1
         elif key[pygame.K_RIGHT]:
-            self.x -= dist
+            self.rect.x -= dist*self.reverse
+            if self.rect.x <= 0:
+                self.reverse = -1
+            if self.rect.x >= 847:
+                self.reverse = 1
+                
+        elif event.type == pygame.KEYUP:
+                if event.key == pygame.K_UP or event.key == pygame.K_DOWN:
+                    self.rect.y += dist*self.reverse
+                    if self.rect.y >= 636:
+                        self.reverse = -1
+                    if self.rect.y <= 0:
+                        self.reverse = 1
+                if event.key == pygame.K_RIGHT or event.key == pygame.K_LEFT:
+                    self.rect.x -= dist*self.reverse
+                    if self.rect.x <= 0:
+                        self.reverse = -1
+                    if self.rect.x >= 847:
+                        self.reverse = 1  
             
     def draw(self, surface):
-        surface.blit(self.image, (self.x, self.y))
+        surface.blit(self.image, (self.rect.x, self.rect.y))
         
     def move(self):
-        randX = randint(0, 600)
-        randY = randint(0, 400)
+        randX = randint(0, 847)
+        randY = randint(0, 636)
         self.rect.center = (randX,randY)
-        
-class Wall(object):
-    def __init__(self, pos):
-        walls.append(self)
-        self.rect = pygame.Rect(pos[0], pos[1], 16, 16)
-
         
 
       
@@ -236,16 +319,12 @@ snitch = Snitch()
 quaffle = Quaffle()
 bludger1 = Bludger1()
 bludger2 = Bludger2()
-walls = [] 
-#sprite= pygame.image.load('HarryPotter.bmp')
 
-#quidditch = pygame.sprite.Renderplain(())
 mouse.set_visible(False)
 
 f = pygame.font.SysFont(None, 25)
 
 hits = 0
-time.set_timer(USEREVENT + 1, DELAY)
 
 clock = pygame.time.Clock()
 crashed = False
@@ -253,66 +332,132 @@ crashed = False
 pygame.mixer.music.load('HarryPotter.wav')
 pygame.mixer.music.play(loops=-1)
 
-#pygame.mixer.music.stop()
-
-# group all sprites together so can draw and move all with just one command
-quidditch.add(hp)
-quidditch.add(snitch)
-quidditch.add(quaffle)
-quidditch.add(bludger1)
-quidditch.add(bludger2)
 
 gameExit = False
 while not gameExit:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             gameExit = True
+            
+        #movement for harry    
         
-        elif event.type == pygame.KEYDOWN:
-            if hp.hit(quaffle):
-            #mixer.Sound("cha-ching.wav").play()
-                quaffle.move()
-                hits += 10
+        #elif event.type == pygame.KEYDOWN:
+        #    dist = 10
+        #    if event.key == pygame.K_UP:
+        #        hp.rect.y -= dist
+        #    if event.key == pygame.K_DOWN:
+        #        hp.rect.y += dist
+        #    if event.key == pygame.K_RIGHT:
+        #        hp.rect.x += dist
+        #    if event.key == pygame.K_LEFT:
+        #        hp.rect.x -= dist
                 
-            
-            if pygame.sprite.collide_rect(hp,snitch):
-                #quaffle.move()
-                text_end = f.render("You caught the snitch! YOU WIN", True, (0,0,0))
-                screen.blit(text_end, (380, 300))
-                pygame.display.flip()
-                print ('You won the Quidditch game')
-                quit()
-            
-            # reset timer
-            time.set_timer(USEREVENT + 1, DELAY)
-            
-        elif event.type == USEREVENT + 1: # TIME has passed
-            snitch.move()
+        #    elif event.type == pygame.KEYUP:
+        #        if event.key == pygame.K_UP or event.key == pygame.K_DOWN:
+        #            hp.rect.y = 0
+        #        if event.key == pygame.K_RIGHT or event.key == pygame.K_LEFT:
+        #            hp.rect.x = 0
+                    
+            # movement of snitch
+        #    dist = randint(1,15)
+        #    if event.key == pygame.K_UP:
+        #        snitch.rect.y -= dist
+        #    if event.key == pygame.K_DOWN:
+        #        snitch.rect.y += dist
+        #    if event.key == pygame.K_RIGHT:
+        #        snitch.rect.x += dist
+        #    if event.key == pygame.K_LEFT:
+        #        snitch.rect.x -= dist
+                
+        #    elif event.type == pygame.KEYUP:
+        #        if event.key == pygame.K_UP or event.key == pygame.K_DOWN:
+        #            snitch.rect.y += dist
+        #        if event.key == pygame.K_RIGHT or event.key == pygame.K_LEFT:
+        #            snitch.rect.x -= dist 
+                    
+            # movement of quaffle
+        #    dist = randint(1,7)
+        #    if event.key == pygame.K_UP:
+        #        quaffle.rect.y += dist
+        #    if event.key == pygame.K_DOWN:
+        #        quaffle.rect.y -= dist
+        #    if event.key == pygame.K_RIGHT:
+        #        quaffle.rect.x -= dist
+        #    if event.key == pygame.K_LEFT:
+        #        quaffle.rect.x += dist
+                
+        #    elif event.type == pygame.KEYUP:
+        #        if event.key == pygame.K_UP or event.key == pygame.K_DOWN:
+        #            quaffle.rect.y -= dist
+        #        if event.key == pygame.K_RIGHT or event.key == pygame.K_LEFT:
+        #            quaffle.rect.x += dist   
     
-    # Move the player if an arrow key is pressed
-    key = pygame.key.get_pressed()
-    if key[pygame.K_LEFT]:
-        hp.move(-2, 0)
-    if key[pygame.K_RIGHT]:
-        hp.move(2, 0)
-    if key[pygame.K_UP]:
-        hp.move(0, -2)
-    if key[pygame.K_DOWN]:
-        hp.move(0, 2)
+            # movement of bludger1    
+        #    dist = randint(1,30)
+        #    if event.key == pygame.K_UP:
+        #        bludger1.rect.y -= dist
+        #    if event.key == pygame.K_DOWN:
+        #        bludger1.rect.y += dist
+        #    if event.key == pygame.K_RIGHT:
+        #        bludger1.rect.x += dist
+        #    if event.key == pygame.K_LEFT:
+        #        bludger1.rect.x -= dist
+                
+        #    elif event.type == pygame.KEYUP:
+        #        if event.key == pygame.K_UP or event.key == pygame.K_DOWN:
+        #            bludger1.rect.y -= dist
+        #        if event.key == pygame.K_RIGHT or event.key == pygame.K_LEFT:
+        #            bludger1.rect.x += dist  
         
-    for wall in walls:
-        pygame.draw.rect(screen, (255, 255, 255), wall.rect)
-        pygame.draw.rect(screen, (255, 0, 0), end_rect)
-        pygame.draw.rect(screen, (255, 200, 0), player.rect)
-        pygame.display.flip()
+            # movement of bludger2
+        #    dist = randint(1,30)
+        #    if event.key == pygame.K_UP:
+        #        bludger2.rect.y -= dist
+        #    if event.key == pygame.K_DOWN:
+        #        bludger2.rect.y += dist
+        #    if event.key == pygame.K_RIGHT:
+        #        bludger2.rect.x += dist
+        #    if event.key == pygame.K_LEFT:
+        #        bludger2.rect.x -= dist
+                
+        #    elif event.type == pygame.KEYUP:
+        #        if event.key == pygame.K_UP or event.key == pygame.K_DOWN:
+        #            bludger2.rect.y += dist
+        #        if event.key == pygame.K_RIGHT or event.key == pygame.K_LEFT:
+        #            bludger2.rect.x -= dist  
+            
+            
+            #hp.handle_keys()
+            #snitch.handle_keys()
+            #quaffle.handle_keys()
+            #bludger1.handle_keys()
+            #bludger2.handle_keys()
+    if pygame.sprite.collide_rect(hp, quaffle):
+        #mixer.Sound("c.wav").play()
+        hits += 10
+        quaffle.move()
+    
+    if pygame.sprite.collide_circle(hp, snitch):
+        hits += 150
         
-    #if hp.rect.colliderect(bludger1.rect):
-        #gameExit = True
-     #   print ('Hello')
+        print ('You won the Quidditch game')
+        gameExit = True
         
+    if pygame.sprite.collide_rect(hp, bludger1):
+        mixer.Sound("crowd-groan.wav").play()
+        hits -= 15
+        bludger1.move()
+        
+    if pygame.sprite.collide_rect(hp, bludger2):
+        mixer.Sound("crowd-groan.wav").play()
+        hits -= 15
+        bludger2.move()
+            
+    
+     
 
     hp.handle_keys()
-    snitch.handle_keys()
+    snitch.handle_keys() # have these again to make movement more smooth
     quaffle.handle_keys()
     bludger1.handle_keys()
     bludger2.handle_keys()
@@ -326,11 +471,19 @@ while not gameExit:
     
     text = f.render("Score = " + str(hits), True, (0,0,0))
     screen.blit(text, (380, 0))
+    if gameExit == True:
+        text_end = f.render("You caught the snitch! YOU WIN", True, (255,255,255))
+        mixer.Sound("cheers.wav").play()
+        screen.blit(text_end, (350, 300))
+        pygame.display.update()
+        pygame.time.delay(3000)
+        break
+        
     
     pygame.display.flip()
     pygame.display.update()
 
-    clock.tick(120)
+ 
 
 #pygame.display.flip() 		#similar to a flip book, updates entire surface
 #pygame.display.update()		#only updates portion specified
@@ -339,4 +492,3 @@ while not gameExit:
 #required
 pygame.quit()
 quit()	
-
